@@ -1,0 +1,14 @@
+The TensorFlow library wasn't compiled to use SSE4.1/SSE4.2/AVX/AVX2/FMA instructions, 
+but these are available on your machine and could speed up CPU computations.
+
+引用stack overflow上的一篇回答：
+https://stackoverflow.com/a/43555840   ---by Salvador Dali
+其中解释了这个warning为什么会出现；
+以及这个问题有什么影响
+解决方法如下：
+bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2 --config=cuda -k 
+//tensorflow/tools/pip_package:build_pip_package
+
+但我在输入上述命令时出现了错误：
+The 'build' command is only supported from within a workspace.
+暂时还未解决......
