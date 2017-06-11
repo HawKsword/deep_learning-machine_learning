@@ -1,0 +1,13 @@
+epoch、 iteration和batchsize，三个的区别：
+
+（1）batchsize：一个批次样本含量。在深度学习中，即每次训练在训练集中取  batchsize 个样本训练；
+（2）iteration：1个iteration等于使用batchsize个样本训练一次；
+（3）epoch：1个epoch等于使用训练集中的全部样本训练一次；
+
+举个例子，训练集有1000个样本，batchsize=100，那么，一个batch有100个样本
+训练完整个样本集需要：
+10次iteration，1次epoch。
+
+iterations（迭代）：每一次迭代都是一次权重更新，每一次权重更新需要batch size个数据进行Forward运算得到损失函数，再BP算法更新参数。
+
+最后可以得到一个公式 one epoch = numbers of iterations = N = 训练样本的数量/batch size  
