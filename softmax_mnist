@@ -1,0 +1,64 @@
+# coding:utf-8
+import tensorflow as tf
+from tensorflow.examples.tutorials.mnist import input_data
+
+mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+'''
+print mnist.train.images.shape, mnist.train.labels.shape
+print mnist.test.images.shape, mnist.test.labels.shape
+print mnist.validation.images.shape, mnist.validation.labels.shape
+'''
+
+sess = tf.InteractiveSession()
+
+x = tf.placeholder("float32", [None, 784])
+# placeholder是一个占位符，None表示此张量的第一个维度可以是任何长度的
+W = tf.Variable(tf.zeros([784, 10]))
+b = tf.Variable(tf.zeros([10]))
+
+y = tf.nn.softmax(tf.matmul(x, W) + b)
+y_ = tf.placeholder("float32", [None, 10])
+
+# cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
+cross_entropy = -tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1])
+# 首先，tf.log计算y的每个元素的对数。 接下来，我们将y_的每个元素乘以tf.log（y）的相应元素。
+# 然后，由于reduce_indices = [1]参数，tf.reduce_sum会在y的第二维中添加元素。即按行求和
+# 最后，tf.reduce_mean计算批次中所有示例的平均值。
+train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+
+tf.global_variables_initializer().run()
+
+for i in range(1000):
+    batch_xs, batch_ys = mnist.train.next_batch(100)
+    train_step.run({x: batch_xs, y_: batch_ys})
+
+correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+print sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels})
+
+
+对以下部分产生了一些疑惑：(line 22~26)
+损失函数为cross entropy
+Loss = -∑ y_ * log(y)
+其中y_是label,y是预测得到的输出。
+问题在于，对于softmax回归来说，不管是y还是y_,都是离散的类别，那么它是如何代入Loss中进行运算的呢？
+
+首先解释一下label的one-hot编码
+独热编码即 One-Hot 编码，又称一位有效编码，其方法是使用N位状态寄存器来对N个状态进行编码，每个状态都有它独立的寄存器位，并且在任意时候，
+其中只有一位有效。
+  例如对六个状态进行编码：
+  自然顺序码为 000,001,010,011,100,101
+  独热编码则是 000001,000010,000100,001000,010000,100000
+独热编码每一个码的总的位数取决于状态的种类数，每一个码里的“1”的位置，就代表了哪个状态生效。
+注意，独热编码还有个特性是，当某个特征里的某一状态生效后，此特征的其他状态因为是互斥的关系，必须全部为0，切必须全部添加到特征里，不能省略不写。
+
+由于分类器往往默认数据数据是连续的，并且是有序的，但是在很多机器学习任务中，存在很多离散（分类）特征，因而将特征值转化成数字时，往往也是不连续的，
+One-Hot 编码解决了这个问题。并且，经过独热编码后，特征变成了稀疏的了。这有两个好处，一是解决了分类器不好处理属性数据的问题，二是在一定程度上也
+起到了扩充特征的作用。
+
+回到问题本身，数字6的one-hot coding 为 [0,0,0,0,0,0,1,0,0,0]
+
+问题依然存在，这种one-hot coding 是如何代入计算cross entropy Loss的呢？
+未完待续....
