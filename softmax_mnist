@@ -19,8 +19,8 @@ b = tf.Variable(tf.zeros([10]))
 y = tf.nn.softmax(tf.matmul(x, W) + b)
 y_ = tf.placeholder("float32", [None, 10])
 
-# cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
-cross_entropy = -tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1])
+cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
+# cross_entropy = -tf.reduce_sum(y_ * tf.log(y))
 # 首先，tf.log计算y的每个元素的对数。 接下来，我们将y_的每个元素乘以tf.log（y）的相应元素。
 # 然后，由于reduce_indices = [1]参数，tf.reduce_sum会在y的第二维中添加元素。即按行求和
 # 最后，tf.reduce_mean计算批次中所有示例的平均值。
@@ -62,3 +62,8 @@ One-Hot 编码解决了这个问题。并且，经过独热编码后，特征变
 
 问题依然存在，这种one-hot coding 是如何代入计算cross entropy Loss的呢？
 未完待续....
+cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
+# cross_entropy = -tf.reduce_sum(y_ * tf.log(y))
+# 首先，tf.log计算y的每个元素的对数。 接下来，我们将y_的每个元素乘以tf.log（y）的相应元素。
+# 然后，由于reduce_indices = [1]参数，tf.reduce_sum在整个tensor中按行（第二维度）求和，即对求得的每个样本的向量求和。
+# 最后，tf.reduce_mean计算批次中所有示例的平均值，即cross entropy 定义中的求和符号，相当于对batch中所有样本求和再平均。
