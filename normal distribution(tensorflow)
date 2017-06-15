@@ -1,0 +1,44 @@
+tf.random_normal
+# 这个函数用在了去噪自编码机中，给输入添加随机高斯噪声
+self.x + scale * tf.random_normal((n_input,))
+random_normal(
+    shape,
+    mean=0.0,
+    stddev=1.0,
+    dtype=tf.float32,
+    seed=None,
+    name=None
+)
+Outputs random values from a normal distribution.从正态分布输出随机值
+Args:
+shape: A 1-D integer Tensor or Python array. The shape of the output tensor.
+mean: A 0-D Tensor or Python value of type dtype. The mean of the normal distribution.
+stddev: A 0-D Tensor or Python value of type dtype. The standard deviation of the normal distribution.
+dtype: The type of the output.
+seed: A Python integer. Used to create a random seed for the distribution. See tf.set_random_seed for behavior.
+name: A name for the operation (optional).
+
+tf.truncated_normal
+模型使用激活函数ReLU，需要使用正态分布给权重参数加一点噪声来打破完全对称并且避免0梯度（将权重初始化为截断的正态分布，标准差为0.1）
+truncated_normal(
+    shape,
+    mean=0.0,
+    stddev=1.0,
+    dtype=tf.float32,
+    seed=None,
+    name=None
+)
+Outputs random values from a truncated normal distribution.
+
+The generated values follow a normal distribution with specified mean and standard deviation,
+except that values whose magnitude is more than 2 standard deviations from the mean are dropped and re-picked.
+其幅度超过平均值的2个标准偏差的值被丢弃并重新选择。
+Args:
+
+shape: A 1-D integer Tensor or Python array. The shape of the output tensor.
+mean: A 0-D Tensor or Python value of type dtype. The mean of the truncated normal distribution.
+stddev: A 0-D Tensor or Python value of type dtype. The standard deviation of the truncated normal distribution.
+dtype: The type of the output.
+seed: A Python integer. Used to create a random seed for the distribution. See tf.set_random_seed for behavior.
+name: A name for the operation (optional).
+
