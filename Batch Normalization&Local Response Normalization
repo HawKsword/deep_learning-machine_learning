@@ -1,0 +1,8 @@
+LRN 局部响应归一化
+侧抑制：被激活的神经元抑制相邻神经元，实现局部抑制
+Relu(适合侧抑制）
+LRN层模仿侧抑制，对局部神经元的活动创建竞争机制，使得响应比较大的值相对更大，增强模型的泛化能力
+(15年被BN拍死在了沙滩上...)
+
+Batch Normalization
+参考下面这篇博文 http://blog.csdn.net/hjimce/article/details/50866313
